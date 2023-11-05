@@ -1,31 +1,50 @@
 ﻿using Lab_10_Anropa_Databas.Data;
 using Lab_10_Anropa_Databas.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace Lab_10_Anropa_Databas
 {
     internal class Program
     {
         static void Main(string[] args)
-        {            
-            using (var context = new NorthContext()) 
+        {
+
+            while (true)
             {
-                string userInput;
+               using (NorthContext context = new NorthContext())
+                {
+                    Console.WriteLine("Welcome to the program");
+                    Console.WriteLine("Press [1] to show all customers");
+                    Console.WriteLine("Press [2] to search for a specific customer");
+                    Console.WriteLine("Press [3] to add new customer data");
+                    Console.WriteLine("press [4] to quit program");
 
-                PrintAllCustomers(context);
-                Console.WriteLine();
-                
-                Console.WriteLine("Please enter company name you wish to search for:");
-                
-                userInput = Console.ReadLine();
-                
-                SearchCustomerInfo(userInput, context);
-                
-                Console.ReadKey();
+                    int userInput = Int32.Parse(Console.ReadLine());
 
-                Console.WriteLine("You will now add a new customer into the database.");
-                AddNewCustomer(context);            
-            }                       
+                    switch (userInput)
+                    {
+                        case 1:
+                            PrintAllCustomers(context);
+                            break;
+
+                        case 2:
+                            SearchCustomerInfo(context);
+                            break;
+                        
+                        case 3:
+                            AddNewCustomer(context);
+                            break;
+
+                        case 4:
+                            Environment.Exit(1);
+                            break;
+                                                          
+                    }
+                }
+                          
+            } 
+                                                 
         }
         static void PrintAllCustomers(NorthContext context)
         {
@@ -64,10 +83,14 @@ namespace Lab_10_Anropa_Databas
                 }            
             }
         }
-        static void SearchCustomerInfo(string input, NorthContext context)
-        {           
-                var searchedCustomer = context.Customers
-                    .Where(c => c.CompanyName == input)
+        static void SearchCustomerInfo(NorthContext context)
+        {
+            Console.WriteLine("Please enter company name you wish to search for:");
+
+            string userInput = Console.ReadLine();
+
+            var searchedCustomer = context.Customers
+                    .Where(c => c.CompanyName == userInput)
                     .Include(c => c.Orders)
                     .Select(c => new { c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Fax })
                     .ToList();
@@ -78,7 +101,7 @@ namespace Lab_10_Anropa_Databas
                 }
 
                 List<Order> listOfOrders = context.Customers
-                    .Where(c => c.CompanyName == input)
+                    .Where(c => c.CompanyName == userInput)
                     .Include(c => c.Orders)
                     .Single()
                     .Orders
@@ -91,9 +114,19 @@ namespace Lab_10_Anropa_Databas
         }
         static void AddNewCustomer(NorthContext context)
         {
+            Random rnd = new Random();
 
-            Random rnd = new Random(); 
-
+            string randomID = "";
+            char letter;
+            int rndValue;          
+            
+            for (int i = 0; i <= 4; i++)
+            {
+                rndValue = rnd.Next(0, 26);
+                letter = Convert.ToChar(rndValue + 65);
+                randomID += letter;
+            }
+            
             Console.WriteLine("Please enter company name:");
             string companyName = Console.ReadLine();
             Console.WriteLine("Enter contact name:");
@@ -121,7 +154,7 @@ namespace Lab_10_Anropa_Databas
 
             Customer customer = new Customer()
             {
-                CustomerId = rnd.Next(10000, 99999).ToString(),
+                CustomerId = randomID,
                 CompanyName = companyName,
                 ContactName = contactName,
                 ContactTitle = contactTitle,
