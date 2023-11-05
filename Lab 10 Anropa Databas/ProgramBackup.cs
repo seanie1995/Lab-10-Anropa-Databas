@@ -10,32 +10,36 @@ namespace Lab_10_Anropa_Databas
         {            
             using (var context = new NorthContext()) 
             {
-                Console.WriteLine("Welcome to the program");
-                Console.WriteLine("The program will now print out all customer details in alphabetical order according to company name");
-                Console.WriteLine("Press 'A' to get list in ascending order or 'D' to get list in descending order");
-                string userInput = Console.ReadLine().ToLower();
+                string userInput;
 
-                while (userInput != "a" && userInput != "d")
-                {
-                    Console.WriteLine("Invalid input. Please press 'A' for list in ascending order or 'D' for listi n descending order");
-                    userInput = Console.ReadLine().ToLower();
-                }
-
-                PrintAllCustomers(userInput, context);
+                PrintAllCustomers(context);
                 Console.WriteLine();
+                
                 Console.WriteLine("Please enter company name you wish to search for:");
+                
                 userInput = Console.ReadLine();
+                
                 SearchCustomerInfo(userInput, context);
+                
                 Console.ReadKey();
 
                 Console.WriteLine("You will now add a new customer into the database.");
                 AddNewCustomer(context);            
             }                       
         }
-        static void PrintAllCustomers(string input, NorthContext context)
-        {           
-            
-            if (input == "a") // OrderBy Ascending
+        static void PrintAllCustomers(NorthContext context)
+        {
+            Console.WriteLine("The program will now print out all customer details in alphabetical order according to company name");
+            Console.WriteLine("Press 'A' to get list in ascending order or 'D' to get list in descending order");
+            string userInput = Console.ReadLine().ToLower();
+
+            while (userInput != "a" && userInput != "d")
+            {
+                Console.WriteLine("Invalid input. Please press 'A' for list in ascending order or 'D' for listi n descending order");
+                userInput = Console.ReadLine().ToLower();
+            }
+
+            if (userInput == "a") // OrderBy Ascending
             {
                 
                 List<Customer> allCustomers = context.Customers
@@ -48,7 +52,7 @@ namespace Lab_10_Anropa_Databas
                 }
                 
             }
-            else if (input == "d") // OrderBy Descending
+            else if (userInput == "d") // OrderBy Descending
             {               
                 List<Customer> allCustomers = context.Customers
                     .OrderByDescending(c => c.CompanyName)
