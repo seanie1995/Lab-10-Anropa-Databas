@@ -20,23 +20,28 @@ namespace Lab_10_Anropa_Databas
                     Console.WriteLine("Press [3] to add new customer data");
                     Console.WriteLine("press [4] to quit program");
 
-                    int userInput = Int32.Parse(Console.ReadLine());
+                    string userInput = Console.ReadLine();
+
+                    if (userInput != "1" && userInput != "2" && userInput != "3" && userInput != "4") 
+                    { 
+                        Console.WriteLine("Invalid input!");
+                    }
 
                     switch (userInput)
                     {
-                        case 1:
+                        case "1":
                             PrintAllCustomers(context);
                             break;
 
-                        case 2:
+                        case "2":
                             SearchCustomerInfo(context);
                             break;
                         
-                        case 3:
+                        case "3":
                             AddNewCustomer(context);
                             break;
 
-                        case 4:
+                        case "4":
                             Environment.Exit(1);
                             break;                                                        
                     }
