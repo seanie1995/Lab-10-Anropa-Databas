@@ -10,9 +10,10 @@ namespace Lab_10_Anropa_Databas
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Welcome to the program");
             while (true)
             {
-                Console.WriteLine("Welcome to the program");
+                
                 using (NorthContext context = new NorthContext())
                 {
                     Console.WriteLine();
@@ -102,9 +103,16 @@ namespace Lab_10_Anropa_Databas
 
                 foreach (var c in searchedCustomer)
                 {
-                Console.WriteLine(c);
+                    Console.WriteLine(c);
                 }
 
+            if (searchedCustomer.Count == 0)
+            {
+                Console.WriteLine($"No company with the name '{userInput}' was found.");
+            }
+
+            else 
+            {
                 var listOfOrders = context.Customers
                     .Where(c => c.CompanyName == userInput)
                     .Include(c => c.Orders)
@@ -115,7 +123,12 @@ namespace Lab_10_Anropa_Databas
                 foreach (var c in listOfOrders)
                 {
                     Console.WriteLine($"OrderID: {c.OrderId} Order Date: {c.OrderDate}");
-                }          
+                }
+
+            }
+
+
+           
         }
         static void AddNewCustomer(NorthContext context)
         {
