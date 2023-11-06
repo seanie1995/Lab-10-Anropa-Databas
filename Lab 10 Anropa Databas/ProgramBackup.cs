@@ -2,6 +2,7 @@
 using Lab_10_Anropa_Databas.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using System.Reflection.Metadata;
 
 namespace Lab_10_Anropa_Databas
 {
@@ -9,7 +10,6 @@ namespace Lab_10_Anropa_Databas
     {
         static void Main(string[] args)
         {
-
             while (true)
             {
                using (NorthContext context = new NorthContext())
@@ -38,13 +38,10 @@ namespace Lab_10_Anropa_Databas
 
                         case 4:
                             Environment.Exit(1);
-                            break;
-                                                          
+                            break;                                                        
                     }
-                }
-                          
-            } 
-                                                 
+                }                          
+            }                                                 
         }
         static void PrintAllCustomers(NorthContext context)
         {
@@ -85,13 +82,14 @@ namespace Lab_10_Anropa_Databas
         }
         static void SearchCustomerInfo(NorthContext context)
         {
-            Console.WriteLine("Please enter company name you wish to search for:");
+            Console.WriteLine("Please enter company name to search:");
 
             string userInput = Console.ReadLine();
 
+            Console.Clear();
+
             var searchedCustomer = context.Customers
-                    .Where(c => c.CompanyName == userInput)
-                    .Include(c => c.Orders)
+                    .Where(c => c.CompanyName == userInput)                  
                     .Select(c => new { c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Fax })
                     .ToList();
 
@@ -114,12 +112,13 @@ namespace Lab_10_Anropa_Databas
         }
         static void AddNewCustomer(NorthContext context)
         {
+            Console.Clear();
             Random rnd = new Random();
 
             string randomID = "";
             char letter;
             int rndValue;          
-            
+                      
             for (int i = 0; i <= 4; i++)
             {
                 rndValue = rnd.Next(0, 26);
@@ -128,29 +127,85 @@ namespace Lab_10_Anropa_Databas
             }
             
             Console.WriteLine("Please enter company name:");
-            string companyName = Console.ReadLine();
+            string companyName = Console.ReadLine();          
+
+            while (string.IsNullOrEmpty(companyName) )
+            {
+                Console.WriteLine("Company Name cannot be empty! Please enter company name:");
+                companyName = Console.ReadLine();
+            }
+
             Console.WriteLine("Enter contact name:");
             string contactName = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(contactName))
+            {
+                contactName = null;
+            }
+
             Console.WriteLine("Please enter contact title:");
             string contactTitle = Console.ReadLine();
 
+            if (string.IsNullOrEmpty(contactTitle))
+            {
+                contactTitle = null;
+            }
+
             Console.WriteLine("Please enter address:");
             string address = Console.ReadLine();
-            Console.WriteLine("Please enter city:");
+
+            if (string.IsNullOrEmpty(address))
+            {
+                address = null;
+            }
+
+            Console.WriteLine("Please enter city:");          
             string city = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(city))
+            {
+                city = null;
+            }
 
             Console.WriteLine("Please enter region:");
             string region = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(region))
+            {
+                region = null;
+            }
+
             Console.WriteLine("Please enter postal code:");
             string postalCode = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(postalCode))
+            {
+                postalCode = null;
+            }
 
             Console.WriteLine("Please enter country:");
             string country = Console.ReadLine();
 
-            Console.WriteLine("Please enter phone and fax numbers");
+            if (string.IsNullOrEmpty(country))
+            {
+                country = null;
+            }
+
+            Console.WriteLine("Please enter phone number");
             string phoneNumber = Console.ReadLine();
-            Console.WriteLine("Please enter phone and fax numbers");
+
+            if (string.IsNullOrEmpty(phoneNumber))
+            {
+                phoneNumber = null;
+            }
+
+            Console.WriteLine("Please enter fax number");
             string faxNumber = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(faxNumber))
+            {
+                faxNumber = null;
+            }
 
             Customer customer = new Customer()
             {
