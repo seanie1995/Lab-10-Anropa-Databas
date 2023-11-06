@@ -12,9 +12,10 @@ namespace Lab_10_Anropa_Databas
         {
             while (true)
             {
-               using (NorthContext context = new NorthContext())
+                Console.WriteLine("Welcome to the program");
+                using (NorthContext context = new NorthContext())
                 {
-                    Console.WriteLine("Welcome to the program");
+                    Console.WriteLine();
                     Console.WriteLine("Press [1] to show all customers");
                     Console.WriteLine("Press [2] to search for a specific customer");
                     Console.WriteLine("Press [3] to add new customer data");
@@ -59,32 +60,33 @@ namespace Lab_10_Anropa_Databas
                 Console.WriteLine("Invalid input. Please press 'A' for list in ascending order or 'D' for listi n descending order");
                 userInput = Console.ReadLine().ToLower();
             }
-
+        
             if (userInput == "a") // OrderBy Ascending
             {
-                
-                List<Customer> allCustomers = context.Customers
+
+                var allCustomers = context.Customers
                     .OrderBy(c => c.CompanyName)
+                    .Include(c => c.Orders)
                     .ToList();
-                 
+
                 foreach (var c in allCustomers)
                 {
-                    Console.WriteLine($"{c.CompanyName} {c.Country} {c.Region} {c.Phone} {c.Orders.Count}");
+                    Console.WriteLine($"{c.CompanyName}, {c.Country} {c.Region} {c.Phone}, Order Count: {c.Orders.Count}");
                 }
-                
+
             }
             else if (userInput == "d") // OrderBy Descending
-            {               
-                List<Customer> allCustomers = context.Customers
+            {
+                var allCustomers = context.Customers
                     .OrderByDescending(c => c.CompanyName)
                     .ToList();
 
                 foreach (var c in allCustomers)
                 {
-                    Console.WriteLine($"{c.CompanyName} {c.Country} {c.Region} {c.Phone} {c.Orders.Count}");
-                }            
+                    Console.WriteLine($"{c.CompanyName}, {c.Country} {c.Region} {c.Phone}, Order Count: {c.Orders.Count}");
+                }
             }
-        }
+    }
         static void SearchCustomerInfo(NorthContext context)
         {
             Console.WriteLine("Please enter company name to search:");
@@ -95,15 +97,15 @@ namespace Lab_10_Anropa_Databas
 
             var searchedCustomer = context.Customers
                     .Where(c => c.CompanyName == userInput)                  
-                    .Select(c => new { c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Fax })
+                    .Select(c => new { c.CompanyName, c.ContactName, c.ContactTitle, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.Fax, c.Phone })
                     .ToList();
 
                 foreach (var c in searchedCustomer)
                 {
-                    Console.WriteLine(c);
+                Console.WriteLine(c);
                 }
 
-                List<Order> listOfOrders = context.Customers
+                var listOfOrders = context.Customers
                     .Where(c => c.CompanyName == userInput)
                     .Include(c => c.Orders)
                     .Single()
