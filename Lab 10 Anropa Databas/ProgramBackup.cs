@@ -69,14 +69,14 @@ namespace Lab_10_Anropa_Databas
                    .Include(c => c.Orders)
                    .ToList();
 
-                var shippedOrders = context.Orders
+                var shippedOrders = context.Orders // Code that counts amount of not-null ShippedDates. Extrauppgift
                     .Join(
                         context.Customers,
                         o => o.CustomerId,
                         c => c.CustomerId,
                         (o, c) => new
                         {
-                            CompanyName = c.CompanyName,                           
+                            c.CompanyName,                           
                             ShippedOrders = o.ShippedDate
                         }
                     )
@@ -91,11 +91,11 @@ namespace Lab_10_Anropa_Databas
                
                 foreach (var c in allCustomers)
                 {
-                    var shippedOrderInfo = shippedOrders.FirstOrDefault(o => o.CompanyName == c.CompanyName);
+                    var shippedOrderInfo = shippedOrders.FirstOrDefault(p => p.CompanyName == c.CompanyName);
                     int shippedOrderCount = shippedOrderInfo != null ? shippedOrderInfo.ShippedOrdersCount : 0;
                     int notShippedOrderCount = c.Orders.Count - shippedOrderCount;
 
-                    Console.WriteLine($"{c.CompanyName}, {c.Country} {c.Region} {c.Phone}, Order Count: {c.Orders.Count}, Shipped Order Count: {shippedOrderCount} Unshipped Order Count: {notShippedOrderCount}");
+                    Console.WriteLine($"{c.CompanyName}, {c.Country} {c.Region} {c.Phone}, Order Count: {c.Orders.Count}, Shipped Order Count: {shippedOrderCount}, Unshipped Order Count: {notShippedOrderCount}");
                     Console.WriteLine("------------------------------------------------------------------------------------------------------------------------------");
                 }
 
@@ -133,7 +133,7 @@ namespace Lab_10_Anropa_Databas
                     int shippedOrderCount = shippedOrderInfo != null ? shippedOrderInfo.ShippedOrdersCount : 0;
                     int notShippedOrderCount = c.Orders.Count - shippedOrderCount;
 
-                    Console.WriteLine($"{c.CompanyName}, {c.Country} {c.Region} {c.Phone}, Order Count: {c.Orders.Count}, Shipped Order Count: {shippedOrderCount} Unshipped Order Count: {notShippedOrderCount}");
+                    Console.WriteLine($"{c.CompanyName}, {c.Country} {c.Region} {c.Phone}, Order Count: {c.Orders.Count}, Shipped Order Count: {shippedOrderCount}, Unshipped Order Count: {notShippedOrderCount}");
                     Console.WriteLine("------------------------------------------------------------------------------------------------------------------------------");
                 }
             }
