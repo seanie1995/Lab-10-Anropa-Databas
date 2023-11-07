@@ -11,7 +11,14 @@ JOIN Customers ON Orders.CustomerID = Customers.CustomerID
 GROUP BY CompanyName
 ORDER BY OrderCount DESC 
 
-SELECT LastName + ' ' + FirstName AS FullName, Employees.EmployeeID, EmployeeTerritories.TerritoryID, TerritoryDescription FROM EmployeeTerritories
+SELECT Employees.EmployeeID, LastName + ' ' + FirstName AS FullName, EmployeeTerritories.TerritoryID, TerritoryDescription FROM EmployeeTerritories
 JOIN Territories ON EmployeeTerritories.TerritoryID = Territories.TerritoryID
 JOIN Employees ON Employees.EmployeeID = EmployeeTerritories.EmployeeID
-ORDER BY FullName
+ORDER BY EmployeeID
+
+SELECT Customers.CompanyName, SUM(UnitPrice) AS TotalOrderPrice FROM Orders
+JOIN Customers ON Orders.CustomerID = Customers.CustomerID
+Join [Order Details] ON Orders.OrderID = [Order Details].OrderID
+GROUP BY CompanyName
+ORDER BY TotalOrderPrice DESC
+

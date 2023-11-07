@@ -114,7 +114,7 @@ namespace Lab_10_Anropa_Databas
                        c => c.CustomerId,
                        (o, c) => new
                        {
-                           CompanyName = c.CompanyName,
+                           c.CompanyName,
                            ShippedOrders = o.ShippedDate
                        }
                    )
@@ -126,7 +126,7 @@ namespace Lab_10_Anropa_Databas
                        ShippedOrdersCount = i.Count()
                    })
                    .ToList();
-
+               
                 foreach (var c in allCustomers)
                 {
                     var shippedOrderInfo = shippedOrders.FirstOrDefault(o => o.CompanyName == c.CompanyName);
