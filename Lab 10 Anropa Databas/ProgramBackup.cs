@@ -11,9 +11,9 @@ namespace Lab_10_Anropa_Databas
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to the program");
+                                       
             while (true)
-            {
-                
+            {               
                 using (NorthContext context = new NorthContext())
                 {
                     Console.WriteLine();
@@ -64,15 +64,39 @@ namespace Lab_10_Anropa_Databas
         
             if (userInput == "a") // OrderBy Ascending
             {
-
                 var allCustomers = context.Customers
-                    .OrderBy(c => c.CompanyName)
-                    .Include(c => c.Orders)
-                    .ToList();
+                   .OrderBy(c => c.CompanyName)
+                   .Include(c => c.Orders)
+                   .ToList();
 
+                var shippedOrders = context.Orders
+                    .Join(
+                        context.Customers,
+                        o => o.CustomerId,
+                        c => c.CustomerId,
+                        (o, c) => new
+                        {
+                            CompanyName = c.CompanyName,                           
+                            ShippedOrders = o.ShippedDate
+                        }
+                    )
+                    .Where(o => o.ShippedOrders != null)
+                    .GroupBy(i => i.CompanyName)
+                    .Select(i => new
+                    {
+                        CompanyName = i.Key,
+                        ShippedOrdersCount = i.Count()
+                    })
+                    .ToList();
+               
                 foreach (var c in allCustomers)
                 {
-                    Console.WriteLine($"{c.CompanyName}, {c.Country} {c.Region} {c.Phone}, Order Count: {c.Orders.Count}");
+                    var shippedOrderInfo = shippedOrders.FirstOrDefault(o => o.CompanyName == c.CompanyName);
+                    int shippedOrderCount = shippedOrderInfo != null ? shippedOrderInfo.ShippedOrdersCount : 0;
+                    int notShippedOrderCount = c.Orders.Count - shippedOrderCount;
+
+                    Console.WriteLine($"{c.CompanyName}, {c.Country} {c.Region} {c.Phone}, Order Count: {c.Orders.Count}, Shipped Order Count: {shippedOrderCount} Unshipped Order Count: {notShippedOrderCount}");
+                    Console.WriteLine("------------------------------------------------------------------------------------------------------------------------------");
                 }
 
             }
@@ -80,11 +104,37 @@ namespace Lab_10_Anropa_Databas
             {
                 var allCustomers = context.Customers
                     .OrderByDescending(c => c.CompanyName)
+                    .Include(c => c.Orders)
                     .ToList();
+
+                var shippedOrders = context.Orders
+                   .Join(
+                       context.Customers,
+                       o => o.CustomerId,
+                       c => c.CustomerId,
+                       (o, c) => new
+                       {
+                           CompanyName = c.CompanyName,
+                           ShippedOrders = o.ShippedDate
+                       }
+                   )
+                   .Where(o => o.ShippedOrders != null)
+                   .GroupBy(i => i.CompanyName)
+                   .Select(i => new
+                   {
+                       CompanyName = i.Key,
+                       ShippedOrdersCount = i.Count()
+                   })
+                   .ToList();
 
                 foreach (var c in allCustomers)
                 {
-                    Console.WriteLine($"{c.CompanyName}, {c.Country} {c.Region} {c.Phone}, Order Count: {c.Orders.Count}");
+                    var shippedOrderInfo = shippedOrders.FirstOrDefault(o => o.CompanyName == c.CompanyName);
+                    int shippedOrderCount = shippedOrderInfo != null ? shippedOrderInfo.ShippedOrdersCount : 0;
+                    int notShippedOrderCount = c.Orders.Count - shippedOrderCount;
+
+                    Console.WriteLine($"{c.CompanyName}, {c.Country} {c.Region} {c.Phone}, Order Count: {c.Orders.Count}, Shipped Order Count: {shippedOrderCount} Unshipped Order Count: {notShippedOrderCount}");
+                    Console.WriteLine("------------------------------------------------------------------------------------------------------------------------------");
                 }
             }
     }
@@ -119,16 +169,14 @@ namespace Lab_10_Anropa_Databas
                     .Single()
                     .Orders
                     .ToList();
-
+                
                 foreach (var c in listOfOrders)
                 {
                     Console.WriteLine($"OrderID: {c.OrderId} Order Date: {c.OrderDate}");
                 }
 
             }
-
-
-           
+          
         }
         static void AddNewCustomer(NorthContext context)
         {
@@ -154,81 +202,46 @@ namespace Lab_10_Anropa_Databas
                 Console.WriteLine("Company Name cannot be empty! Please enter company name:");
                 companyName = Console.ReadLine();
             }
-
+           
             Console.WriteLine("Enter contact name:");
-            string contactName = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(contactName))
-            {
-                contactName = null;
-            }
-
+            string input = Console.ReadLine();
+            string contactName = string.IsNullOrWhiteSpace(input) ? null : input;
+            
             Console.WriteLine("Please enter contact title:");
-            string contactTitle = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(contactTitle))
-            {
-                contactTitle = null;
-            }
+            input = Console.ReadLine();
+            string contactTitle = string.IsNullOrWhiteSpace(input) ? null : input;
 
             Console.WriteLine("Please enter address:");
-            string address = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(address))
-            {
-                address = null;
-            }
-
+            input = Console.ReadLine();
+            string address = string.IsNullOrWhiteSpace(input) ? null : input;  
+            
             Console.WriteLine("Please enter city:");          
-            string city = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(city))
-            {
-                city = null;
-            }
-
+            input = Console.ReadLine();
+            string city = string.IsNullOrWhiteSpace(input) ? null : input;
+           
             Console.WriteLine("Please enter region:");
-            string region = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(region))
-            {
-                region = null;
-            }
+            input = Console.ReadLine();
+            string region = string.IsNullOrWhiteSpace(input) ? null : input;
 
             Console.WriteLine("Please enter postal code:");
-            string postalCode = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(postalCode))
-            {
-                postalCode = null;
-            }
+            input = Console.ReadLine();
+            string postalCode = string.IsNullOrWhiteSpace(input) ? null : input;
 
             Console.WriteLine("Please enter country:");
-            string country = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(country))
-            {
-                country = null;
-            }
+            input = Console.ReadLine();
+            string country = string.IsNullOrWhiteSpace(input) ? null : input;
 
             Console.WriteLine("Please enter phone number");
-            string phoneNumber = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(phoneNumber))
-            {
-                phoneNumber = null;
-            }
+            input = Console.ReadLine();
+            string phoneNumber = string.IsNullOrWhiteSpace(input) ? null : input;
 
             Console.WriteLine("Please enter fax number");
-            string faxNumber = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(faxNumber))
-            {
-                faxNumber = null;
-            }
+            input = Console.ReadLine();
+            string faxNumber = string.IsNullOrWhiteSpace(input) ? null : input;
 
             Customer customer = new Customer()
             {
+                              
                 CustomerId = randomID,
                 CompanyName = companyName,
                 ContactName = contactName,
