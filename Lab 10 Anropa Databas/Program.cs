@@ -64,12 +64,54 @@ namespace Lab_10_Anropa_Databas
         
             if (userInput == "a") // OrderBy Ascending
             {
-               
+                var allCustomers = context.Customers
+                   .OrderBy(c => c.CompanyName)
+                   .Include(c => c.Orders)
+                   .Select(c => new
+                   {
+                       CompanyName = c.CompanyName,
+                       Country = c.Country,
+                       Region = c.Region,
+                       Phone = c.Phone,
+                       Orders = c.Orders,
+                       ShippedOrders = c.Orders.Where(c => c.ShippedDate != null).Count(),
+                       UnshippedOrders = c.Orders.Where(c => c.ShippedDate == null).Count(),
+
+                   })
+                   .ToList();
+                   
+                foreach (var c in allCustomers)
+                {
+                    
+                    Console.WriteLine($"{c.CompanyName}, {c.Country} {c.Region} {c.Phone}, Order Count: {c.Orders.Count}, Shipped Order Count: {c.ShippedOrders}, Unshipped Order Count: {c.UnshippedOrders}");
+                    Console.WriteLine("------------------------------------------------------------------------------------------------------------------------------");
+                }
 
             }
             else if (userInput == "d") // OrderBy Descending
             {
-                
+                var allCustomers = context.Customers
+                   .OrderByDescending(c => c.CompanyName)
+                   .Include(c => c.Orders)
+                   .Select(c => new
+                   {
+                       CompanyName = c.CompanyName,
+                       Country = c.Country,
+                       Region = c.Region,
+                       Phone = c.Phone,
+                       Orders = c.Orders,
+                       ShippedOrders = c.Orders.Where(c => c.ShippedDate != null).Count(),
+                       UnshippedOrders = c.Orders.Where(c => c.ShippedDate == null).Count(),
+
+                   })
+                   .ToList();
+
+                foreach (var c in allCustomers)
+                {
+
+                    Console.WriteLine($"{c.CompanyName}, {c.Country} {c.Region} {c.Phone}, Order Count: {c.Orders.Count}, Shipped Order Count: {c.ShippedOrders}, Unshipped Order Count: {c.UnshippedOrders}");
+                    Console.WriteLine("------------------------------------------------------------------------------------------------------------------------------");
+                }
             }
     }
         static void SearchCustomerInfo(NorthContext context)
