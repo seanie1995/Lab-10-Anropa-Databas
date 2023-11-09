@@ -64,78 +64,12 @@ namespace Lab_10_Anropa_Databas
         
             if (userInput == "a") // OrderBy Ascending
             {
-                var allCustomers = context.Customers
-                   .OrderBy(c => c.CompanyName)
-                   .Include(c => c.Orders)
-                   .ToList();
-
-                var shippedOrders = context.Orders // Code that counts amount of not-null ShippedDates. Extrauppgift
-                    .Join(
-                        context.Customers,
-                        o => o.CustomerId,
-                        c => c.CustomerId,
-                        (o, c) => new
-                        {
-                            c.CompanyName,                           
-                            ShippedOrders = o.ShippedDate
-                        }
-                    )
-                    .Where(o => o.ShippedOrders != null)
-                    .GroupBy(i => i.CompanyName)
-                    .Select(i => new
-                    {
-                        CompanyName = i.Key,
-                        ShippedOrdersCount = i.Count()
-                    })
-                    .ToList();
                
-                foreach (var c in allCustomers)
-                {
-                    var shippedOrderInfo = shippedOrders.FirstOrDefault(p => p.CompanyName == c.CompanyName);
-                    int shippedOrderCount = shippedOrderInfo != null ? shippedOrderInfo.ShippedOrdersCount : 0;
-                    int notShippedOrderCount = c.Orders.Count - shippedOrderCount;
-
-                    Console.WriteLine($"{c.CompanyName}, {c.Country} {c.Region} {c.Phone}, Order Count: {c.Orders.Count}, Shipped Order Count: {shippedOrderCount}, Unshipped Order Count: {notShippedOrderCount}");
-                    Console.WriteLine("------------------------------------------------------------------------------------------------------------------------------");
-                }
 
             }
             else if (userInput == "d") // OrderBy Descending
             {
-                var allCustomers = context.Customers
-                    .OrderByDescending(c => c.CompanyName)
-                    .Include(c => c.Orders)
-                    .ToList();
-
-                var shippedOrders = context.Orders
-                   .Join(
-                       context.Customers,
-                       o => o.CustomerId,
-                       c => c.CustomerId,
-                       (o, c) => new
-                       {
-                           c.CompanyName,
-                           ShippedOrders = o.ShippedDate
-                       }
-                   )
-                   .Where(o => o.ShippedOrders != null)
-                   .GroupBy(i => i.CompanyName)
-                   .Select(i => new
-                   {
-                       CompanyName = i.Key,
-                       ShippedOrdersCount = i.Count()
-                   })
-                   .ToList();
-               
-                foreach (var c in allCustomers)
-                {
-                    var shippedOrderInfo = shippedOrders.FirstOrDefault(o => o.CompanyName == c.CompanyName);
-                    int shippedOrderCount = shippedOrderInfo != null ? shippedOrderInfo.ShippedOrdersCount : 0;
-                    int notShippedOrderCount = c.Orders.Count - shippedOrderCount;
-
-                    Console.WriteLine($"{c.CompanyName}, {c.Country} {c.Region} {c.Phone}, Order Count: {c.Orders.Count}, Shipped Order Count: {shippedOrderCount}, Unshipped Order Count: {notShippedOrderCount}");
-                    Console.WriteLine("------------------------------------------------------------------------------------------------------------------------------");
-                }
+                
             }
     }
         static void SearchCustomerInfo(NorthContext context)
